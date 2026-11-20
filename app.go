@@ -1,17 +1,26 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
+ "fmt"
+ "log"
+ "net/http"
+ "time"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Hello, 世界")
+ w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+ fmt.Fprintln(w, "Hello, 世界")
+ fmt.Fprintf(w, "Время сервера: %s\n", time.Now().Format("2006-01-02 15:04:05"))
+ fmt.Fprintln(w, "Контрольная работа: Вариант 11")
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+ w.WriteHeader(http.StatusOK)
+ fmt.Fprintln(w, "OK")
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	fmt.Println("Running demo app. Press Ctrl+C to exit...")
-	log.Fatal(http.ListenAndServe(":8888", nil))
+ http.HandleFunc("/", handler)
+ http.HandleFunc("/health", healthHandler)
+ log.Fatal(http.ListenAndServe(":8888", nil))
 }
